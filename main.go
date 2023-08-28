@@ -34,16 +34,19 @@ func applyGrayscale(img image.Image) image.Image {
 	bounds := img.Bounds()
 	grayImg := image.NewGray(bounds)
 
-	// TODO: Iterate over the image pixels and apply the grayscale formula
-	// Tips: iterate over the bounds. bounds.Min.Y and bounds.Max.Y indicate pixel-width and
-	// bouns.Min.X and bounds.Max.X indicate pixel-height.
+
+	/*1. Task to perform: Browse the pixels of the image and implement the formula for the conversion to grayscale.
+      2. Note: It is advisable to browse the limits. Bounds.Min.Y and Bounds.Max.Y represent pixel width, while bouns.Min.X and bounds.Max.X represent pixel height.
+	  3. To Do: Explore the pixels in the image and apply the method for converting to grayscale.
+	  4. Advice: During the course, be sure to consider the terminals. The values Bounds.Min.Y and Bounds.Max.Y determine the width of the pixels, while bouns.Min.X and bounds.Max.X determine the height of the pixels.*/
+
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			// Tip: to get one pixel, img.At(x, y)
+			//Get a pixel, use image.At(x, y).
 			pixel := img.At(x, y)
-			// Tip: To convert one pixel to gray: color.GrayModel.Convert(pixel)
+			//To convert one pixel to gray: color.GrayModel.Convert(pixel)
 			grayColor := color.GrayModel.Convert(pixel).(color.Gray)
-			// Tip: To set every pixel on an image: gayImg.Set(x, y, pixel)
+			//To set every pixel on an image: gayImg.Set(x, y, pixel)
 			grayImg.Set(x, y, grayColor)
 		}
 	}
@@ -51,13 +54,15 @@ func applyGrayscale(img image.Image) image.Image {
 	return grayImg
 }
 
-// Tips: results channel will have string messages indicating Success or failure
-// Sucess: "Processed file at <filepath>"
-// Error: "Error when processing <inputfile>"
+/*
+- Tips: Success or failure messages will be available in the results channel as strings.
+- If successful: "The file was processed successfully: <file_path>"
+- In the event of an error: "An error occurred while processing the file: <input_file>"
+*/
 func processImage(inputPath, outputPath string, wg *sync.WaitGroup, results chan<- string) {
 	defer wg.Done()
 
-	// TODO: Open the input image file using os.Open(filename)
+	// Task to perform: Use the os.Open(filename) function to open the input image file.
 	inputFile, err := os.Open(inputPath)
 	if err != nil {
 		results <- fmt.Sprintf("Error when processing %s: %s", inputPath, err)
@@ -65,17 +70,17 @@ func processImage(inputPath, outputPath string, wg *sync.WaitGroup, results chan
 	}
 	defer inputFile.Close()
 
-	// TODO: The the image object by decoding the file. image.Decode(inputFile)
+	// Task to perform: Use the image object by decoding the file. image.Decode(inputFile)
 	img, _, err := image.Decode(inputFile)
 	if err != nil {
 		results <- fmt.Sprintf("Error when processing %s: %s", inputPath, err)
 		return
 	}
 
-	// TODO: Apply grayscale filter using the applyGrayscale function
+	// Task to perform: Apply grayscale filter using the applyGrayscale function
 	grayImg := applyGrayscale(img)
 
-	// TODO: Create the output file
+	// Task to perform: Create the output file
 	// It should be in the same folder. os.Create(filepath.Join(outputPath, filepath.Base(inputPath)))
 
 	outputFilePath := filepath.Join(outputPath, filepath.Base(inputPath))
@@ -86,7 +91,7 @@ func processImage(inputPath, outputPath string, wg *sync.WaitGroup, results chan
 	}
 	defer outputFile.Close()
 
-	// TODO: Encode and save the grayscale image
+	// Task to perform: Encode and save the grayscale image
 	// Check the extension of the image.
 	switch filepath.Ext(inputPath) {
 	// if filepath.Ext(inputFile) == ".png" -> png.Encode(outputfile, grayimg)
@@ -99,7 +104,7 @@ func processImage(inputPath, outputPath string, wg *sync.WaitGroup, results chan
 		results <- fmt.Sprintf("Error when processing %s: Unsupported image format", inputPath)
 		return
 	}
-	// TODO: Send a message to the results channel indicating success or failure
+	// Task to perform: Send a message to the results channel indicating success or failure
 	if err != nil {
 		results <- fmt.Sprintf("Error when processing %s: %s", inputPath, err)
 		return
